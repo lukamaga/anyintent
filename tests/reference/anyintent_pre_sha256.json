@@ -1,0 +1,98 @@
+{
+ "what": "byte copy of the anyintent library before the check and scores work: every file of lib/anyintent/src/anyintent at the commit below, copied with git show (PROTOCOL entry of 2026-10-13 00:06, (2); design revision 4, 1.6 check 2); on 2026-10-17 the project's name before the rename to R2Intent was removed from the files listed in 'renamed' with the same edit as in the library (owner's decision of 2026-10-17: the public library carries no old name; the unedited copy stays in the project's own repository): the support of the old meta file, name key and adapter prefix is gone, the comments that named the old runtimes name them neutrally, and the v1 checkpoint meta is named as read from r2intent_meta.json. sha256, git_blob and bytes are those of the copy; commit_git_blob is the git blob of the file at the commit (equal to git_blob for every file not in 'renamed'); rename_diff_sha256 (files in 'renamed' only) is the sha256 of the unified diff without context lines from the commit's file to the copy, which test_classify_identity checks where git holds the commit",
+ "commit": "bc424ed11d093c7da808e5568f9962881f51fd43",
+ "source": "lib/anyintent/src/anyintent",
+ "copy": "lib/anyintent/tests/reference/anyintent_pre",
+ "renamed": [
+  "backends.py",
+  "config.py",
+  "fast.py",
+  "fewshot.py",
+  "fusion.py",
+  "hub.py",
+  "labels.py",
+  "model.py"
+ ],
+ "files": {
+  "__init__.py": {
+   "sha256": "ba1895eb13dc32a1bf29d92e50120b89321b2a2c3152304e9a65edfcfd009400",
+   "git_blob": "f0813a9f9947aa01002a6688ae0b99062ab834a5",
+   "bytes": 405,
+   "commit_git_blob": "f0813a9f9947aa01002a6688ae0b99062ab834a5"
+  },
+  "_version.py": {
+   "sha256": "a9b84c8789a0d893280857e52b0211bc0a54eb7451f00c6f62ad4e4ffffcb202",
+   "git_blob": "4b4a921b1d1538fedcfa66a6f439fceff7f007be",
+   "bytes": 27,
+   "commit_git_blob": "4b4a921b1d1538fedcfa66a6f439fceff7f007be"
+  },
+  "backends.py": {
+   "sha256": "e5eebd068d7fd93df48e9e731778ab6828d66ce2ad47893518bb8ef0a48d4582",
+   "git_blob": "c1b21758f8f1beabf4ae432b57754f29a0ce0eee",
+   "bytes": 16693,
+   "commit_git_blob": "e05ab0082c4bae9bb4d3eb263bb3cfd3adfef6b0",
+   "rename_diff_sha256": "8e9b2e8182d9c7620c776cb6d44fc0b086a0132b1ae65def716ca31982177547"
+  },
+  "cache.py": {
+   "sha256": "b3565a878b696bdaada887f346c552f22932a74979f24cd0903479b592e5d590",
+   "git_blob": "a0bfa4b042668693f4e8cc99c7e7ab2c3a0d1492",
+   "bytes": 2485,
+   "commit_git_blob": "a0bfa4b042668693f4e8cc99c7e7ab2c3a0d1492"
+  },
+  "config.py": {
+   "sha256": "879a104674ed8d3b7da33c3d92546f744d5375742a65b0541664ff73a140eb51",
+   "git_blob": "0d1508fa100675d6d1b2699dc9b8a383fcde024c",
+   "bytes": 19402,
+   "commit_git_blob": "cdb32091cfb79212fac68ad35e83dce410489716",
+   "rename_diff_sha256": "f82a3bb0a776b4f49ff0cca464af7b15e6fb353c70c720008020057966675aaf"
+  },
+  "fast.py": {
+   "sha256": "6f1fbc155976907c584b28b3d337291a459e76cec480a6729ebefd96112d5e0a",
+   "git_blob": "5929b53e6c00a148e607714623aec472064d9b4d",
+   "bytes": 9595,
+   "commit_git_blob": "ee076e481eadf5033fe01079d9ef2ac509c7ecf9",
+   "rename_diff_sha256": "41fd1f49bb1180a099911b1ec3e1453345e365ec574e413728e8e744c37b7abf"
+  },
+  "fewshot.py": {
+   "sha256": "d08b511e94d4b8e8793358e7bd988e44df6561cbe87b36fee39f45e14f30ecd2",
+   "git_blob": "ecc0896bda3094609767ce4beec9bca057ef2912",
+   "bytes": 9532,
+   "commit_git_blob": "b5b12821b6d18476b2e363ec37b52162b78243fb",
+   "rename_diff_sha256": "907e5a408bbcaa6360a0043658bd81f71f0484aadd8f47032696e8287337f2ed"
+  },
+  "fusion.py": {
+   "sha256": "0ffb8c4a3382eea104cff9cd575027220d165ba5dd8ffbab3662f6398dad5b2b",
+   "git_blob": "f7c0d85e7735a77465689e75eeb2b68e3b1a2033",
+   "bytes": 2530,
+   "commit_git_blob": "10f6d0e731836c5cb533b7a59ac9a2deaccbfc94",
+   "rename_diff_sha256": "763477be9d5e2e7c325a77b420482cbb9d814830f65e08c86fcd97c376d4fe25"
+  },
+  "hub.py": {
+   "sha256": "d0594e5dd397a9c6add8e89d4b573d98b72e14d4f29e4b259c128013c72ec93d",
+   "git_blob": "537cc406683df48292361e5f484ac8f8acc1785f",
+   "bytes": 8535,
+   "commit_git_blob": "cf9195772e189c0d8076502a60c5ce04299be3a4",
+   "rename_diff_sha256": "e2d76246b69619adbc8638d9493011af019eb9f563fc35ff960075bf854741e6"
+  },
+  "labels.py": {
+   "sha256": "a09dacd4c1961ea584ca5aa0ef061e3c2adb2c9bda11e254f891b27e00b64c22",
+   "git_blob": "b7abd6823fdaf9e7e63180590e4722d31b2ca948",
+   "bytes": 3626,
+   "commit_git_blob": "ddd0e1725fd4236824fdce8bf37fc44deeb72d3a",
+   "rename_diff_sha256": "7bf3f6a6b1e55de8fa9d121f689d4267c1deb3dd7b15a3762101e665d6f7bf25"
+  },
+  "model.py": {
+   "sha256": "c0f214032b17b63fcd15975189c0f02a69a02b2337ded7a81ea5aa76ef5f93e4",
+   "git_blob": "8dfc98776896cd0b6bb9f3d7f25d919d44f0545c",
+   "bytes": 22702,
+   "commit_git_blob": "09d89e95ba53e21d752248d0fec025cb0282616b",
+   "rename_diff_sha256": "160f42222d168a379bf0c04e0e7b0144f79fe521515fc1ab26a799b2a0e99218"
+  },
+  "onnx.py": {
+   "sha256": "a49d365e0f5efd55d0b3ff409d4a8b6c42c083d79ad197dd31ac3863202ac6b4",
+   "git_blob": "2c391a9e46eece0682849ef4354fb96470b4ca0f",
+   "bytes": 9193,
+   "commit_git_blob": "2c391a9e46eece0682849ef4354fb96470b4ca0f"
+  }
+ }
+}

@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=77", "packaging>=24.2"]   # the SPDX license string below needs both
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "anyintent"
+dynamic = ["version"]
+description = "Intent classification with your own list of intents, for the R2Intent models (embedding retrieval plus a cross-encoder reranker)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [{name = "Lukaš Patrik Magalinski"}]
+keywords = ["intent classification", "reranker", "cross-encoder", "multilingual", "nlp"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "torch>=2.6",
+    "transformers>=4.56,<6",
+    "safetensors>=0.4",
+    "huggingface_hub>=0.34",
+    "numpy>=1.24",
+]
+
+[project.urls]
+Repository = "https://github.com/lukamaga/anyintent"
+
+[project.optional-dependencies]
+onnx = ["onnx>=1.15", "onnxruntime>=1.17", "onnxscript>=0.5"]
+server = ["fastapi>=0.110", "uvicorn>=0.23", "pydantic>=2"]
+mcp = ["mcp>=1.8,<2"]   # mcp 2 (FastMCP renamed to MCPServer, other APIs changed) is not supported yet
+# every mcp 1.x release on PyPI requires Python >=3.10 (all 60, checked 2026-10-15): the mcp extra needs Python 3.10+
+test = ["pytest>=7", "httpx>=0.24"]
+
+[project.scripts]
+anyintent-serve = "anyintent.serve_cli:main"
+anyintent-mcp = "anyintent.mcp_server:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "anyintent._version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

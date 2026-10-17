@@ -1,0 +1,22 @@
+# Versions the images install: torch from the PyTorch index at the version below, then the library with the server
+# extra under these constraints (pip install -c constraints.txt). They are the versions the anyintent test suite
+# and tools/server_smoke.py passed with on 2026-10-12 (macOS, Python 3.12.4, CPU). The Kaggle CPU smoke and a Docker
+# build must confirm them inside the images; change them only together with such a run.
+torch==2.9.0
+transformers==5.5.0
+tokenizers==0.22.2
+safetensors==0.7.0
+huggingface_hub==1.9.2
+numpy==2.1.1
+fastapi==0.115.0
+starlette==0.38.6
+pydantic==2.9.2
+pydantic_core==2.23.4
+uvicorn==0.30.6
+anyio==4.5.0
+h11==0.14.0
+click==8.3.2
+typing_extensions==4.12.2
+# The images install the server extra only; the mcp extra, if an image adds it, needs mcp 1.x (the range of the
+# extra in pyproject.toml: mcp 2 is not supported yet).
+mcp>=1.8,<2

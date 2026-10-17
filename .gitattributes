@@ -1,0 +1,17 @@
+# Text files are stored with LF and checked out with LF on every system, also with core.autocrlf true (the default
+# of Git for Windows), so that sources, JSON files and pages are byte for byte the same everywhere.
+* text=auto eol=lf
+
+# Byte-exact copies: the tests compare their sha256 and sizes (tests/reference/anyintent_pre_sha256.json), so git
+# never converts them.
+tests/reference/** -text
+
+# Binary files: no line ending conversion and no text diff.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.safetensors binary
+*.onnx binary
+
+# Notebooks are JSON text.
+*.ipynb text eol=lf

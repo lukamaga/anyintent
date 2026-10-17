@@ -1,0 +1,7 @@
+anyintent
+Copyright 2026 Lukaš Patrik Magalinski
+
+This library is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The R2Intent models that this library loads are not part of it. They are published separately on Hugging Face under
+their own license (CC BY-NC 4.0, non-commercial use only), and the license of this library gives no rights to them.

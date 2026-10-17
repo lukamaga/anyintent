@@ -1,0 +1,84 @@
+# The library's tests and the live server smoke on Linux, macOS and Windows, on tiny random models built by the tests
+# (no model download, no network beyond 127.0.0.1, no secret).
+name: tests
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+# a newer push to the same pull request cancels its older run; a run on main or on a tag is not cancelled once it runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: ${{ matrix.os }}, Python ${{ matrix.python }}${{ matrix.autocrlf && ', core.autocrlf true' || '' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # the mcp extra needs Python 3.10 or later (pyproject.toml), so the 3.9 job runs without it
+          # Python 3.9 has no build for Ubuntu 26.04 (actions/python-versions), and ubuntu-latest moves to 26.04
+          - {os: ubuntu-24.04, python: "3.9", extras: "test,server,onnx"}
+          - {os: ubuntu-latest, python: "3.12", extras: "test,server,mcp,onnx"}
+          - {os: ubuntu-latest, python: "3.13", extras: "test,server,mcp,onnx"}
+          - {os: macos-latest, python: "3.12", extras: "test,server,mcp,onnx"}
+          - {os: windows-latest, python: "3.10", extras: "test,server,mcp,onnx"}
+          - {os: windows-latest, python: "3.12", extras: "test,server,mcp,onnx"}
+          - {os: windows-latest, python: "3.13", extras: "test,server,mcp,onnx"}
+          # a checkout with core.autocrlf true, as Git for Windows sets it by default (the other Windows jobs set it to
+          # false, so the two kinds of checkout differ whatever the runner image sets)
+          - {os: windows-latest, python: "3.12", extras: "test,server,mcp,onnx", autocrlf: true}
+    defaults:
+      run:
+        shell: bash
+    env:
+      HF_HUB_OFFLINE: "1"
+    steps:
+      - name: Set core.autocrlf before the checkout (Windows)
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf ${{ matrix.autocrlf && 'true' || 'false' }}
+
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Upgrade pip
+        run: python -m pip install -U pip
+
+      # PyTorch from PyPI on Linux brings the large CUDA wheels; the tests need only the CPU build
+      - name: Install PyTorch from the CPU index (Linux)
+        if: runner.os == 'Linux'
+        run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install the library
+        run: python -m pip install -e ".[${{ matrix.extras }}]"
+
+      # tests/test_release_check.py needs pandas and pyarrow (it is skipped without them)
+      - name: Install pandas and pyarrow for the release check tests
+        run: python -m pip install pandas pyarrow
+
+      - name: Versions
+        run: python -c "import sys, torch, transformers, anyintent; print(sys.version); print('torch', torch.__version__, 'transformers', transformers.__version__, 'anyintent', anyintent.__version__)"
+
+      # step time limits: an MCP server over stdio that never answers on one system should not hold the job for an hour
+      - name: Library tests
+        timeout-minutes: 30
+        run: python -m pytest -q -rs
+
+      - name: Server smoke
+        timeout-minutes: 20
+        run: python tools/server_smoke.py --out "${{ runner.temp }}/server_smoke" ${{ !contains(matrix.extras, 'mcp') && '--skip-mcp' || '' }}

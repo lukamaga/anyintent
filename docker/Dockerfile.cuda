@@ -1,0 +1,54 @@
+# AnyIntent HTTP server, CUDA image (official NVIDIA CUDA runtime base, non-root user).
+# Build from the library root, the folder with pyproject.toml:
+#   docker build -f docker/Dockerfile.cuda -t anyintent-server:cuda .
+# Run on a host with an NVIDIA driver and the NVIDIA Container Toolkit:
+#   docker run --rm --gpus all -p 127.0.0.1:8000:8000 -e HF_TOKEN -v anyintent-data:/data anyintent-server:cuda
+# The PyTorch wheels of TORCH_INDEX_URL bring their own CUDA libraries; the host driver must support that CUDA
+# version (cu126 by default; change both build arguments together for another CUDA version). For a reproducible
+# build pin the base image by its digest: --build-arg CUDA_IMAGE=nvidia/cuda:12.6.3-runtime-ubuntu22.04@sha256:<digest>
+ARG CUDA_IMAGE=nvidia/cuda:12.6.3-runtime-ubuntu22.04
+FROM ${CUDA_IMAGE}
+
+ARG TORCH_INDEX_URL=https://download.pytorch.org/whl/cu126
+# the model revision the server loads (a tag or a commit hash; empty: the repository's default branch)
+ARG ANYINTENT_REVISION=
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    HF_HOME=/data/hf \
+    ANYINTENT_MODEL=lukashm/r2intent-v1 \
+    ANYINTENT_REVISION=${ANYINTENT_REVISION} \
+    ANYINTENT_LISTS_DIR=/data/lists \
+    PATH=/opt/venv/bin:${PATH}
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 python3-venv ca-certificates \
+ && rm -rf /var/lib/apt/lists/* \
+ && python3 -m venv /opt/venv \
+ && groupadd --system --gid 10001 anyintent \
+ && useradd --system --uid 10001 --gid anyintent --create-home --home-dir /home/anyintent anyintent \
+ && mkdir -p /data/hf /data/lists \
+ && chown -R anyintent:anyintent /data
+
+WORKDIR /opt/anyintent
+COPY pyproject.toml README.md LICENSE NOTICE ./
+COPY docker/constraints.txt ./constraints.txt
+COPY src ./src
+RUN pip install --upgrade pip \
+ && pip install --index-url "${TORCH_INDEX_URL}" "$(grep '^torch==' constraints.txt)" \
+ && pip install -c constraints.txt "./[server]" \
+ && rm -rf build src/*.egg-info
+
+USER anyintent
+VOLUME ["/data"]
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=600s --retries=3 \
+  CMD ["python", "-c", "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).status == 200 else 1)"]
+
+# --device cuda: the server stops with an error when no GPU is visible (instead of running on the CPU unnoticed).
+# Without an API key the server accepts only requests addressed to 127.0.0.1 or localhost (see the CPU Dockerfile).
+ENTRYPOINT ["anyintent-serve", "--host", "0.0.0.0", "--port", "8000", "--device", "cuda"]
+CMD []
