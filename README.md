@@ -14,6 +14,7 @@
 [![Model license: CC BY-NC 4.0, non-commercial](https://img.shields.io/badge/model%20license-CC%20BY--NC%204.0-blue)](#license)
 [![Version 0.1.0](https://img.shields.io/badge/version-v0.1.0-blue)](https://github.com/lukamaga/anyintent/tree/v0.1.0)
 [![Python 3.9 or later](https://img.shields.io/badge/python-3.9%2B-blue?logo=python&logoColor=white)](pyproject.toml)
+[![Tests](https://github.com/lukamaga/anyintent/actions/workflows/tests.yml/badge.svg)](https://github.com/lukamaga/anyintent/actions/workflows/tests.yml)
 
 </div>
 
